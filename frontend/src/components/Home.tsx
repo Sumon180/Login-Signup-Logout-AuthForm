@@ -48,7 +48,7 @@ const Home = () => {
                     (
                         <div>
                             <h3 className="text-3xl text-white my-5">You are Authorized {name}</h3>
-                            <button onClick={handleLogOut} className="bg-rose-500 py-2 px-5 rounded-md">Logout</button>
+                            <button onClick={handleLogOut} className="bg-rose-700 text-white hover:bg-rose-500 py-2 px-5 rounded-md">Logout</button>
                         </div>
                     )
                     :
@@ -56,7 +56,7 @@ const Home = () => {
                         <div>
                             <h3 className="text-white">{message}</h3>
                             <h3 className="text-3xl text-white my-5">Login Now</h3>
-                            <Link to={"/login"} className="bg-yellow-500 py-2 px-5 rounded-md">Login</Link>
+                            <Link to={"/login"} className="bg-yellow-600 hover:bg-yellow-500 py-2 px-5 rounded-md">Login</Link>
                         </div>
                     )
             }
