@@ -2,14 +2,15 @@ import express from "express";
 import mysql from "mysql";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import jwt from "jsonwebtoken";
+import jwt, { verify } from "jsonwebtoken";
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://127.0.0.1:5173"],
-    methods: ["POST,GET"],
+    origin: ["http://localhost:5173"],
+    methods: ["POST", "GET"],
     credentials: true,
   })
 );
@@ -21,9 +22,31 @@ const db = mysql.createConnection({
   database: "signup",
 });
 
+//middleweare
+const verifyUser = (req, res, next) => {
+  const token = req.cookies.token;
+  if (!token) {
+    return res.json({ Msg: "We need token please provide it" });
+  } else {
+    jwt.verify(token, "our-jsonwebtoken-secret-key", (err, decode) => {
+      if (err) {
+        return res.json({ Msg: "Athentication Error" });
+      } else {
+        req.name = decode.name;
+        next();
+      }
+    });
+  }
+};
+
+app.get("/", verifyUser, (req, res) => {
+  return res.json({ Status: "Success", name: req.name });
+});
+
 app.post("/login", (req, res) => {
+  const { email, password } = req.body;
   const sql = "SELECT * FROM login WHERE email = ? AND password = ?";
-  db.query(sql, [req.body.email, req.body.password], (err, data) => {
+  db.query(sql, [email, password], (err, data) => {
     if (err) return res.json({ Msg: "Server side error" });
     if (data.length > 0) {
       const name = data[0].name;
@@ -33,10 +56,16 @@ app.post("/login", (req, res) => {
       res.cookie("token", token);
       return res.json({ Status: "Success" });
     } else {
-      return res.json({ Msg: "No records existed" });
+      return res.json({ Msg: "No records exist" });
     }
   });
 });
+
+app.use("/logout", (req, res) => {
+  res.clearCookie("token");
+  return res.json({ Status: "Success" });
+});
+
 db.connect((err) => {
   if (err) throw err;
   console.log("Connected to MySQL database");

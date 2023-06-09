@@ -1,50 +1,53 @@
 import { FaUserAlt } from "react-icons/fa";
 import { AiTwotoneUnlock } from "react-icons/ai";
-import { FC, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-interface formProps {
-    email: string,
-    password: string
+interface FormProps {
+    email: string;
+    password: string;
 }
 
-const Form: FC<formProps> = () => {
-    const [values, setValues] = useState({
+const Login = () => {
+    const [values, setValues] = useState<FormProps>({
         email: "",
         password: ""
-    })
+    });
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
-    axios.defaults.withCredentials = true
-    const handleSubmit = (e: { preventDefault: () => void; }) => {
+    axios.defaults.withCredentials = true;
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        axios.post("http://localhost:8081/login", values)
-            .then(res => {
-                if (res.data.Status === "Success") {
-                    navigate("/")
-                } else {
-                    alert(res.data.Msg)
-                }
-            })
-            .catch(err => console.log(err))
-
-    }
-
+        try {
+            const res = await axios.post("http://localhost:8081/login", values);
+            if (res.data.Status === "Success") {
+                console.log(res);
+                navigate("/");
+            } else {
+                alert(res.data.Msg);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <div className="login_form_container">
-            <div className="login_form" >
+            <div className="login_form">
                 <h2>Login</h2>
-                <form action="" onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit}>
                     <div className="input_group">
                         <FaUserAlt className="fa" />
                         <input
                             type="email"
-                            name='email'
+                            name="email"
                             placeholder="Enter email"
-                            onChange={(e) => setValues({ ...values, email: e.target.value })}
+                            value={values.email}
+                            onChange={(e) =>
+                                setValues({ ...values, email: e.target.value })
+                            }
                             className="input_text"
                             autoComplete="off"
                         />
@@ -53,9 +56,12 @@ const Form: FC<formProps> = () => {
                         <AiTwotoneUnlock className="fa" />
                         <input
                             type="password"
-                            name='password'
+                            name="password"
                             placeholder="Password"
-                            onChange={(e) => setValues({ ...values, password: e.target.value })}
+                            value={values.password}
+                            onChange={(e) =>
+                                setValues({ ...values, password: e.target.value })
+                            }
                             className="input_text"
                             autoComplete="off"
                         />
@@ -70,7 +76,7 @@ const Form: FC<formProps> = () => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Form
+export default Login;
