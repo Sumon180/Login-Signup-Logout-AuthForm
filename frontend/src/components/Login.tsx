@@ -2,7 +2,7 @@ import { FaUserAlt } from "react-icons/fa";
 import { AiTwotoneUnlock } from "react-icons/ai";
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface FormProps {
     email: string;
@@ -71,8 +71,8 @@ const Login = () => {
                     </div>
                 </form>
                 <div className="fotter">
-                    <a>Forgot password?</a>
-                    <a>Signup</a>
+                    <Link to={"/forgotpasswordpage"}>Forgot password?</Link>
+                    <Link to={"/signuppage"}>Signup</Link>
                 </div>
             </div>
         </div>
