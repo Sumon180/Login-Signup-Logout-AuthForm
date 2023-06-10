@@ -1,6 +1,7 @@
 import { useState, ChangeEvent, FormEvent, FC } from 'react';
 import { FormErrors, FormData, FormInput } from '../types/types';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const SignUpPage: FC = () => {
     const [formData, setFormData] = useState<FormData>({
@@ -10,6 +11,7 @@ const SignUpPage: FC = () => {
         password: '',
     });
     const [errors, setErrors] = useState<FormErrors>({});
+    const navigate = useNavigate();
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -45,11 +47,17 @@ const SignUpPage: FC = () => {
         return isValid;
     };
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const isValid = validateForm();
-        if (isValid) {
-            console.log(formData); // Replace with your sign-up logic
+        try {
+            const isValid = validateForm();
+            if (isValid) {
+                const res = await axios.post("http://localhost:8081/signup", formData)
+                console.log(res.data);
+                setTimeout(() => navigate("/login"), 500);
+            }
+        } catch (error) {
+            console.log(error);
         }
     };
 

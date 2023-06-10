@@ -49,6 +49,7 @@ const Home = () => {
                         <div>
                             <h3 className="text-3xl text-white my-5">You are Authorized {name}</h3>
                             <button onClick={handleLogOut} className="bg-rose-700 text-white hover:bg-rose-500 py-2 px-5 rounded-md">Logout</button>
+                            <Link to={"/signuppage"} className="bg-green-700 text-white hover:bg-rose-500 py-2 px-5 rounded-md">Create new user</Link>
                         </div>
                     )
                     :

@@ -61,6 +61,24 @@ app.post("/login", (req, res) => {
   });
 });
 
+app.post("/signup", (req, res) => {
+  const { firstName, lastName, email, password } = req.body;
+
+  // Insert the user into the database
+  const query =
+    "INSERT INTO login (firstname, lastname, email, password) VALUES (?, ?, ?, ?)";
+  db.query(query, [firstName, lastName, email, password], (err, data) => {
+    if (err) {
+      console.error("Error inserting user:", err);
+      res.status(500).json({ error: "Error inserting user" });
+      return;
+    }
+
+    // User successfully inserted
+    res.json({ message: "User inserted successfully", data });
+  });
+});
+
 app.use("/logout", (req, res) => {
   res.clearCookie("token");
   return res.json({ Status: "Success" });
