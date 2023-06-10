@@ -61,22 +61,30 @@ app.post("/login", (req, res) => {
   });
 });
 
-app.post("/signup", (req, res) => {
+app.post("/signup", async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
 
-  // Insert the user into the database
-  const query =
-    "INSERT INTO login (firstname, lastname, email, password) VALUES (?, ?, ?, ?)";
-  db.query(query, [firstName, lastName, email, password], (err, data) => {
-    if (err) {
-      console.error("Error inserting user:", err);
-      res.status(500).json({ error: "Error inserting user" });
-      return;
-    }
+  try {
+    // Insert the user into the database
+    const query =
+      "INSERT INTO login (firstname, lastname, email, password) VALUES (?, ?, ?, ?)";
+    await new Promise((resolve, reject) => {
+      db.query(query, [firstName, lastName, email, password], (err, data) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+
+        resolve(data);
+      });
+    });
 
     // User successfully inserted
-    res.json({ message: "User inserted successfully", data });
-  });
+    res.json({ message: "User inserted successfully" });
+  } catch (error) {
+    console.error("Error inserting user:", error);
+    res.status(500).json({ error: "Error inserting user" });
+  }
 });
 
 app.use("/logout", (req, res) => {
