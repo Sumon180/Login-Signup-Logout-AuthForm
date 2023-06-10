@@ -1,5 +1,6 @@
 import { useState, ChangeEvent, FormEvent, FC } from 'react';
 import { FormErrors, FormData, FormInput } from '../types/types';
+import { Link } from 'react-router-dom';
 
 const SignUpPage: FC = () => {
     const [formData, setFormData] = useState<FormData>({
@@ -89,6 +90,7 @@ const SignUpPage: FC = () => {
                         </button>
                     </div>
                 </form>
+                <p>Already signed? <Link to={"/login"} className='text-blue-500' >Login</Link></p>
             </div>
         </div>
     );
